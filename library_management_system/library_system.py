@@ -7,7 +7,7 @@ ii) Explain theoretically
 History of book -> Which users have taken this book
 History of User -> Which books this user has taken
 
-
+Notes in good notes
 
 """
 from datetime import datetime
