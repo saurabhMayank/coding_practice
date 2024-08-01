@@ -278,33 +278,33 @@ if __name__ == "__main__":
     # print(deals_object.get_deal())
     
     # Pause execution for 100 seconds
-    time.sleep(100)
-    print("100 seconds have passed")
-
-    print("\n")
-    print("----claim deal by User 3")
-    print("\n")
-
-
-    user_obj_3 = UserModel("ms", "ms@abc.com")
-    print(user_obj_3.name)
-    print("\n")
-
-    deals_object = api_handler.claim_deal(deals_object, user_obj_3)
-    print(deals_object.get_deal())
+    # time.sleep(100)
+    # print("100 seconds have passed")
 
     # print("\n")
-    # print("--------End the deal------")
+    # print("----claim deal by User 3")
     # print("\n")
-    # api_handler.end_deal(deals_object)
 
+
+    # user_obj_3 = UserModel("ms", "ms@abc.com")
+    # print(user_obj_3.name)
     # print("\n")
-    # user_obj_4 = UserModel("tikku", "tikku@abc.com")
-    # print(user_obj_4.name)
 
-    # print("---claim deal by the user 4 after deal has ended----")
-    # deals_object = api_handler.claim_deal(deals_object, user_obj_4)
+    # deals_object = api_handler.claim_deal(deals_object, user_obj_3)
     # print(deals_object.get_deal())
+
+    print("\n")
+    print("--------End the deal------")
+    print("\n")
+    api_handler.end_deal(deals_object)
+
+    print("\n")
+    user_obj_4 = UserModel("tikku", "tikku@abc.com")
+    print(user_obj_4.name)
+
+    print("---claim deal by the user 4 after deal has ended----")
+    deals_object = api_handler.claim_deal(deals_object, user_obj_4)
+    print(deals_object.get_deal())
 
     
 
