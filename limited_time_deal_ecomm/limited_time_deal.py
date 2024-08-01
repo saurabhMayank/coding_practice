@@ -21,6 +21,9 @@ class ProductModel:
         self.name = name
         self.price = price
 
+    def get_name(self):
+        return self.name
+
 
 class DealsModel:
     """
@@ -209,14 +212,10 @@ class ApiHandler:
 
 
 """
-Tests Section
+Run script section
 """
 
-
-
-# API Running Section
-
-if __name__ == "__main__":
+def main():
     print("hello from limited time deals app")
 
     print("\n")
@@ -306,6 +305,14 @@ if __name__ == "__main__":
     deals_object = api_handler.claim_deal(deals_object, user_obj_4)
     print(deals_object.get_deal())
 
+
+
+
+# API Running Section
+
+if __name__ == "__main__":
+    main()
+    
     
 
 
