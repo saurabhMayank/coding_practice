@@ -21,9 +21,6 @@ class ProductModel:
         self.name = name
         self.price = price
 
-    def get_name(self):
-        return self.name
-
 
 class DealsModel:
     """
@@ -61,6 +58,8 @@ class UserModel:
         # initially user has not claimed a deal
         self.deal_claimed = False
 
+    def user_claim_deal(self):
+        self.deal_claimed = True
 
 
 
@@ -68,7 +67,7 @@ class DealService:
     def __init__(self):
         pass
 
-    def create_deal(self, item_object: ProductModel, item_count: int, time_limit: int, start_time: int):
+    def create_deal(self, item_object: ProductModel, item_count: int, time_limit: int, start_time: int) -> DealService:
         """
         API to create a deal for a specific item
         Function responsibilty is to create the deal
@@ -100,7 +99,8 @@ class DealService:
 
         return self
     
-    def get_deal(self):
+    
+    def get_deal(self) -> dict:
         """
         Utils model to get create deal_data dict from deals_model_instance
         """
@@ -119,7 +119,7 @@ class DealService:
     # by default value is -1
     # value of both of these vars should be +ve integer
     # so the default value is passed as -ve
-    def update_deal(self, item_count=-1, time_limit=-1):
+    def update_deal(self, item_count=-1, time_limit=-1) -> DealService:
         """
         API to update the deal
         Function responsibilty is to update the deal
@@ -135,7 +135,7 @@ class DealService:
         return self
 
     
-    def claim_deal(self, user_obj: UserModel):
+    def claim_deal(self, user_obj: UserModel) -> DealService:
         """
         Api to claim the deal
         Function responsibilty is to claim the deal for the User
@@ -164,7 +164,7 @@ class DealService:
         self.curr_deal_model.update_item_count(self.curr_deal_model.item_count-1)
 
         # user has claimed the deal
-        user_obj.deal_claimed = True
+        user_obj.user_claim_deal()
 
         return self
     
@@ -317,5 +317,9 @@ if __name__ == "__main__":
 
 
 
-
+"""
+Extensions
+-> Can add getters for all the init functions params
+-> that can help to fetch the instance vars in a secure way
+"""
 
