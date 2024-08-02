@@ -213,6 +213,8 @@ class ApiHandler:
 
 """
 Run script section
+Sample cases in the script
+
 """
 
 def main():
@@ -240,6 +242,7 @@ def main():
 
     print("\n")
 
+    # case 1 -> update the deal
     print("----update count of items & deal time---")
     item_count = 3
     time_limit = 80 # in seconds
@@ -249,6 +252,7 @@ def main():
 
     print("\n")
 
+    # Case 2 -> claim the deal by 2 users
     print("-----user-----")
     user_obj = UserModel("mayank", "mayank@abc.com")
 
@@ -271,27 +275,33 @@ def main():
     deals_object = api_handler.claim_deal(deals_object, user_obj_2)
     print(deals_object.get_deal())
 
+    # Case 3 -> User who has already claimed the deal is trying to claim 
+    # again
     # user 1 trying to claim the deal again
-    # print("\n")
-    # deals_object = api_handler.claim_deal(deals_object, user_obj)
-    # print(deals_object.get_deal())
+    print("\n")
+    deals_object = api_handler.claim_deal(deals_object, user_obj)
+    print(deals_object.get_deal())
     
+
+    # Case 4 -> User trying to claim the deal after time is over
     # Pause execution for 100 seconds
-    # time.sleep(100)
-    # print("100 seconds have passed")
+    time.sleep(100)
+    print("100 seconds have passed")
 
-    # print("\n")
-    # print("----claim deal by User 3")
-    # print("\n")
+    print("\n")
+    print("----claim deal by User 3")
+    print("\n")
 
 
-    # user_obj_3 = UserModel("ms", "ms@abc.com")
-    # print(user_obj_3.name)
-    # print("\n")
+    user_obj_3 = UserModel("ms", "ms@abc.com")
+    print(user_obj_3.name)
+    print("\n")
 
-    # deals_object = api_handler.claim_deal(deals_object, user_obj_3)
-    # print(deals_object.get_deal())
+    deals_object = api_handler.claim_deal(deals_object, user_obj_3)
+    print(deals_object.get_deal())
 
+
+    # Case 5 -> New user trying to claim the deal after deal has ended
     print("\n")
     print("--------End the deal------")
     print("\n")
@@ -306,16 +316,12 @@ def main():
     print(deals_object.get_deal())
 
 
-
-
 # API Running Section
 
 if __name__ == "__main__":
     main()
     
     
-
-
 
 """
 Extensions
