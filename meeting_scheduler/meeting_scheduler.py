@@ -6,7 +6,9 @@ from datetime import datetime, timedelta
 
 
 class MeetingModel:
-    def __init__(self, name, time, duration):
+    # time tuple -> (hrs, mins) 
+    # same for duration
+    def __init__(self, name, time: tuple, duration: tuple):
         self.id = time.time()
         self.name = name
         self.time = time
@@ -69,6 +71,24 @@ class MeetingService:
 class UserService:
     def __init__(self):
         pass
+    
+    def add_user(self, name: str, email: str):
+        """
+        Functional API to add User
+        Responsibility
+        -> Do all the validation
+        -> Have some wrapper logic
+        Before adding User to the DB (UserModel)
+        """
+
+        if not isinstance(name, str):
+            raise Exception("user_name should be string")
+
+        # similar validation check for email
+
+        user_model_obj = UserModel(name, email)
+        return user_model_obj
+
 
     def get_meeting_list(self, user_name: str):
         """
@@ -89,6 +109,24 @@ class UserService:
 class RoomService:
     def __init__(self):
         pass
+    
+
+    def add_room(self, name: str):
+        """
+        Functional API to add room
+        Responsibility
+        -> Do all the validation
+        -> Have some wrapper logic
+        Before adding User to the DB (UserModel)
+        """
+
+        if not isinstance(name, str):
+            raise Exception("user_name should be string")
+
+        # similar validation check for email
+
+        room_model_obj = RoomModel(name)
+        return room_model_obj
 
     def get_meeting_list(self, room_name: int):
         """
@@ -114,8 +152,8 @@ class MeetingSchedulerService:
         self,
         user_list: List[UserModel],
         room: RoomModel,
-        time: datetime,
-        duration: int,
+        time: tuple,
+        duration: tuple,
         meeting_name: str,
     ):
         """
@@ -129,20 +167,28 @@ class MeetingSchedulerService:
         -> Extension -> Suggest another slot if conflict (not implemented)
         """
 
+        # meeting start time
+        start_time = time
+        end_time = (time[0]+duration[0], time[1]+duration[1])
+
         # check if room available
         for meeting_sch_obj in MeetingSchedulerModel.total_meeting_transaction:
             if (
                 room.id == meeting_sch_obj.room.id
-                and meeting_sch_obj.meeting.time == time
+                and meeting_sch_obj.meeting.time[0]+ meeting_sch_obj.meeting.duration[0] > start_time[0]
             ):
+                # scheduled_meeting_time + duration > curr_meet_start_time 
+                # then curr_meeting cannot be scheduled in same room
                 raise Exception("Room is not available in that time")
 
         # check if all users are free
         for meeting_sch_obj in MeetingSchedulerModel.total_meeting_transaction:
             if (
                 meeting_sch_obj.user in user_list
-                and meeting_sch_obj.meeting.time == time
+                and meeting_sch_obj.meeting.time[0] + meeting_sch_obj.meeting.duration[0] > start_time[0]
             ):
+                # scheduled_meeting_time + duration > curr_meet_start_time 
+                # then meeting_sch_obj.user cannot join curr_meeting
                 raise Exception(
                     f"User {meeting_sch_obj.user.name} not available at the defined, pls choose another time"
                 )
@@ -164,6 +210,18 @@ class ApiHandler:
     def __init__(self):
         pass
     
+    def add_user(self, name, email):
+        user_service = UserService()
+
+        user_obj = user_service.add_user(name, email)
+        return user_obj
+    
+    def add_room(self, name):
+
+        room_service = RoomService()
+        room_obj = room_service.add_room(name)
+        return room_obj
+
 
     def schedule_meeting(self, user_list, room, time, duration, meeting_name):
         meeting_sch = MeetingSchedulerService()
@@ -173,7 +231,27 @@ class ApiHandler:
 def main():
     """
     """
-    pass
+
+    user1_obj = api_handler.add_user("mayank", "mayank@abc.com")
+
+    user2_obj = api_handler.add_user("saurabh", "saurabh@abc.com")
+
+
+    user3_obj = api_handler.add_user("saurabh", "saurabh@abc.com")
+
+    room1_obj = api_handler.add_room("sushruta")
+    room2_obj = api_handler.add_room("ramanujan")
+
+
+    # time is 24 hours clock here
+    # elements of tuple will be int
+    # time is provided in tuple (hrs, mins)
+    # meeting duration in tuple (hrs, mins)
+    # only hrs will be updated minutes will be 0 for now
+    time = (16, 00)
+    duration = (1, 00)
+    api_handler.schedule_meeting([user1_obj, user2_obj], room, time, duration, "random_meet")
+    
 
 
 if __name__ == "__main__":
