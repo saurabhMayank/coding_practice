@@ -1,6 +1,7 @@
 from enum import Enum
 import time
 from abc import ABC, abstractmethod
+from typing import List
 
 from datetime import datetime, timedelta
 
@@ -8,10 +9,10 @@ from datetime import datetime, timedelta
 class MeetingModel:
     # time tuple -> (hrs, mins) 
     # same for duration
-    def __init__(self, name, time: tuple, duration: tuple):
+    def __init__(self, name, meeting_time: tuple, duration: tuple):
         self.id = time.time()
         self.name = name
-        self.time = time
+        self.meeting_time = meeting_time
         # duration in hrs
         self.duration = duration
 
@@ -40,8 +41,8 @@ class MeetingSchedulerModel:
         self.room = room
 
     @staticmethod
-    def add_meeting_transac_to_total(meeting_transac_obj: MeetingSchedulerModel):
-        MeetingTransactionModel.total_meeting_transaction.append(meeting_transac_obj)
+    def add_meeting_transac_to_total(meeting_transac_obj):
+        MeetingSchedulerModel.total_meeting_transaction.append(meeting_transac_obj)
 
 
 """
@@ -175,8 +176,10 @@ class MeetingSchedulerService:
         for meeting_sch_obj in MeetingSchedulerModel.total_meeting_transaction:
             if (
                 room.id == meeting_sch_obj.room.id
-                and meeting_sch_obj.meeting.time[0]+ meeting_sch_obj.meeting.duration[0] > start_time[0]
+                and meeting_sch_obj.meeting.meeting_time[0]+ meeting_sch_obj.meeting.duration[0] > start_time[0]
             ):
+                # room matches the room id 
+                # and there is meeting scheduled at that time in that room
                 # scheduled_meeting_time + duration > curr_meet_start_time 
                 # then curr_meeting cannot be scheduled in same room
                 raise Exception("Room is not available in that time")
@@ -185,8 +188,10 @@ class MeetingSchedulerService:
         for meeting_sch_obj in MeetingSchedulerModel.total_meeting_transaction:
             if (
                 meeting_sch_obj.user in user_list
-                and meeting_sch_obj.meeting.time[0] + meeting_sch_obj.meeting.duration[0] > start_time[0]
+                and meeting_sch_obj.meeting.meeting_time[0] + meeting_sch_obj.meeting.duration[0] > start_time[0]
             ):
+                # if user has scheduled meetings
+                # and
                 # scheduled_meeting_time + duration > curr_meet_start_time 
                 # then meeting_sch_obj.user cannot join curr_meeting
                 raise Exception(
@@ -194,9 +199,9 @@ class MeetingSchedulerService:
                 )
 
         # schedule the meeting
-        meeting_obj = Meeting(name, time, duration)
+        meeting_obj = MeetingModel(meeting_name, time, duration)
         for user_obj in user_list:
-            meeting_sch_obj = MeetingSchedulerModel(user_obj, room, meeting_obj)
+            meeting_sch_obj = MeetingSchedulerModel(user_obj, meeting_obj, room)
             MeetingSchedulerModel.add_meeting_transac_to_total(meeting_sch_obj)
 
         
@@ -231,6 +236,7 @@ class ApiHandler:
 def main():
     """
     """
+    api_handler = ApiHandler()
 
     user1_obj = api_handler.add_user("mayank", "mayank@abc.com")
 
@@ -241,6 +247,8 @@ def main():
 
     room1_obj = api_handler.add_room("sushruta")
     room2_obj = api_handler.add_room("ramanujan")
+    room3_obj = api_handler.add_room("chanakya")
+
 
 
     # time is 24 hours clock here
@@ -248,10 +256,32 @@ def main():
     # time is provided in tuple (hrs, mins)
     # meeting duration in tuple (hrs, mins)
     # only hrs will be updated minutes will be 0 for now
+
+    # case 1 -> schedule meeting
     time = (16, 00)
     duration = (1, 00)
-    api_handler.schedule_meeting([user1_obj, user2_obj], room, time, duration, "random_meet")
-    
+    api_handler.schedule_meeting([user1_obj, user2_obj], room1_obj, time, duration, "random_meet")
+
+
+    # case 2 -> try to schedule meeting at same time in a different room
+    # time = (16, 00)
+    # duration = (1, 00)
+    # # schedule_meeting(user_list, room, time, duration, meeting_name)
+    # api_handler.schedule_meeting([user1_obj, user2_obj], room2_obj, time, duration, "random_meet_2")
+
+    # case 3 -> trying to schedule meeting at different time in same room
+    # time = (17, 00)
+    # duration = (1, 00)
+    # # schedule_meeting(user_list, room, time, duration, meeting_name)
+    # api_handler.schedule_meeting([user1_obj, user2_obj], room1_obj, time, duration, "random_meet_2")
+
+    # case 4 -> adding a user whose meeting is already booked that time
+    time = (16, 00)
+    duration = (1, 00)
+    # schedule_meeting(user_list, room, time, duration, meeting_name)
+    api_handler.schedule_meeting([user1_obj, user3_obj], room3_obj, time, duration, "random_meet_3")
+
+
 
 
 if __name__ == "__main__":
