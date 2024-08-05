@@ -89,7 +89,7 @@ class FileSystem(VFS):
         self.inodes = {}
         
     # mode is not implemented -> suggest as extension
-    def fopen(self, filename, mode, file_size, block_num):
+    def fopen(self, filename, mode, file_size=0, block_num=[]):
         
         if filename in self.inodes:
             # if file name present
@@ -150,6 +150,6 @@ block_device = BlockDevice(1024 * 1024, 1024)  # 1MB device with 1KB blocks
 file_system = FileSystem(block_device)
 
 # Test the file system
-inode = file_system.fopen("testfile", "w", file_size=3, block_nums[0, 1, 2])
+inode = file_system.fopen("testfile", "w", file_size=3, block_num=[0, 1, 2])
 file_system.fwrite(inode, b"Hi")
 print(file_system.fread(inode))
